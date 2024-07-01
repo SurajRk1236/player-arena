@@ -1,19 +1,48 @@
 plugins {
-    id("java")
+    id 'java'
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '7.1.0'
 }
 
-group = "org.swiggy.project"
-version = "1.0-SNAPSHOT"
+group = 'org.swiggy.project'
+version = '1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    testImplementation(platform("org.junit:junit-bom:5.10.0"))
-    testImplementation("org.junit.jupiter:junit-jupiter")
+    implementation(platform("org.junit:junit-bom:5.10.0"))
+    implementation("org.junit.jupiter:junit-jupiter-api")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine")
+}
+
+application {
+    mainClassName = 'org.swiggy.project.Main'
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
 }
 
 tasks.test {
     useJUnitPlatform()
+}
+
+tasks.jar {
+    manifest {
+        attributes(
+                'Main-Class': 'org.swiggy.project.Main'
+        )
+    }
+}
+
+tasks.shadowJar {
+    archiveClassifier.set('')
+    manifest {
+        attributes(
+                'Main-Class': 'org.swiggy.project.Main'
+        )
+    }
+    mergeServiceFiles()
 }
